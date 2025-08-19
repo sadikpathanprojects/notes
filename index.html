@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>My Notes App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #1e1e1e;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+    }
+    h1 {
+      margin-bottom: 20px;
+    }
+    textarea {
+      width: 100%;
+      max-width: 600px;
+      height: 120px;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+    button {
+      margin: 5px;
+      padding: 10px 15px;
+      border: none;
+      border-radius: 6px;
+      background: #4CAF50;
+      color: white;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    button:hover {
+      background: #45a049;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      max-width: 600px;
+      width: 100%;
+    }
+    li {
+      background: #333;
+      margin: 5px 0;
+      padding: 10px;
+      border-radius: 6px;
+    }
+    .footer {
+      margin-top: 30px;
+      font-size: 14px;
+      color: #aaa;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>📝 My Notes</h1>
+  <textarea id="noteInput" placeholder="Type your note here..."></textarea><br>
+  <button onclick="saveNote()">Save Note</button>
+  <button onclick="exportNotes()">Export Notes</button>
+
+  <h2>Saved Notes</h2>
+  <ul id="notesList"></ul>
+
+  <div class="footer">Created by Sadik Pathan</div>
+
+  <script>
+    // Load notes from localStorage when app opens
+    let notes = JSON.parse(localStorage.getItem("notes")) || [];
+    renderNotes();
+
+    function saveNote() {
+      const noteInput = document.getElementById("noteInput");
+      const text = noteInput.value.trim();
+      if (text === "") return;
+
+      notes.push(text);
+      localStorage.setItem("notes", JSON.stringify(notes));
+      noteInput.value = "";
+      renderNotes();
+    }
+
+    function renderNotes() {
+      const list = document.getElementById("notesList");
+      list.innerHTML = "";
+      notes.forEach((note, index) => {
+        const li = document.createElement("li");
+        li.textContent = note;
+        list.appendChild(li);
+      });
+    }
+
+    function exportNotes() {
+      const content = notes.join("\n\n---\n\n");
+      const blob = new Blob([content], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "my_notes.txt";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+  </script>
+</body>
+</html>
